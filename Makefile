@@ -4,47 +4,47 @@ CFLAGS = -Wall
 LDFLAGS = -lglfw -lGLEW -lGL -lX11 -lpthread -lXrandr -lXi -ldl
 INCLUDE_PATH = ./thirdparty/include
 LIBRARY_PATH = ./thirdparty/lib
-MODULE_NAME = opengl-scene
 BUILD_DIR = bin
 
-# Searching for source files and generating object file names
-SOURCE_FILES = $(wildcard *.cpp)
-OBJECT_FILES = $(patsubst %,$(BUILD_DIR)/%, $(notdir $(SOURCE_FILES:.cpp=.o)))
+DIRECTORIES = $(wildcard ./scenes/*)
+MODULE_DIRECTORIES = $(subst /scenes/,/bin/,$(DIRECTORIES))
+MODULES = $(foreach directory,$(MODULE_DIRECTORIES),$(directory)/$(word 3,$(subst /, ,$(directory)))-executable)
 
-# Beginning build process
-$(BUILD_DIR)/$(MODULE_NAME): $(OBJECT_FILES)
-	$(CXX) -L$(LIBRARY_PATH) -o $@ $^ $(LDFLAGS)
+.PHONY: all clean run
+all: $(MODULE_DIRECTORIES) $(MODULES)
 
-# Using the vpath directive to fetch the right
-# source file to build the right object file.
-vpath %.cpp $(dir $(SOURCE_FILES))
+# Generates all the necessary build folders
+$(MODULE_DIRECTORIES):
+	mkdir -p $@
 
-# Since the timestamps on directories change whenever a file is
-# added, removed, or renamed, we certainly don’t want to rebuild all
-# the targets whenever the build directory’s timestamp changes.
-# One way to manage this is with order-only prerequisites:
-# make the directory an order-only prerequisite on all the targets
-$(BUILD_DIR)/%.o: %.cpp | $(BUILD_DIR)
-	$(CXX) $(CFLAGS) -I$(INCLUDE_PATH) -L$(LIBRARY_PATH) -c $< $(LDFLAGS) -o $@
+# Function to construct a module's rule
+define GENERATE_RULE
+# Using eval here because direct assignment 
+# caused strange issues where the variables 
+# where turning out to be empty strings
+$(eval SOURCE_FILES=$(wildcard ./scenes/$1/*.cpp))
+$(eval OBJECT_FILES=$(patsubst %,./bin/$1/%, $(notdir $(SOURCE_FILES:.cpp=.o))))
+$(eval SOURCE_DIRECTORY=./scenes/$1)
+$(eval OBJECT_DIRECTORY=./bin/$1)
 
-# This is an order-only prerequisite for
-# the creation of the build directory before
-# the generation of the object files
-$(BUILD_DIR):
-	@mkdir -p "$(BUILD_DIR)"
+# Important to double '$' for 
+# automatic variables inside a make function 
+./bin/$1/$1-executable: $(OBJECT_FILES)
+	$(CXX) -L$(LIBRARY_PATH) -o $$@ $$^ $(LDFLAGS)
 
-# Use `make help` to find all the source files in the project
-.PHONY: help
-help:
-	@echo "SOURCE_FILES: $(SOURCE_FILES)"
+$(OBJECT_FILES): $(OBJECT_DIRECTORY)/%.o : $(SOURCE_DIRECTORY)/%.cpp
+	$(CXX) $(CFLAGS) -I$(INCLUDE_PATH) -L$(LIBRARY_PATH) -c $$< $(LDFLAGS) -o $$@
+endef
+
+# Constructing module rules for everything in $(MODULES)
+$(foreach module,$(MODULES),$(eval $(call GENERATE_RULE,$(word 3,$(subst /, ,$(module))))))
 
 # Use `make clean` to remove the bin folder
-.PHONY: clean
 clean:
 	@echo "Removing the build folder..."
-	rm -rf bin
+	rm -rf $(BUILD_DIR)
 
-# Use `make run` to execute your program
-.PHONY: run
+# Use `make run` to execute your program 
+# by passing in program name to $(PROGRAM)
 run:
-	LD_LIBRARY_PATH=./thirdparty/lib ./bin/opengl-scene
+	LD_LIBRARY_PATH=./thirdparty/lib ./bin/$(PROGRAM)/$(PROGRAM)-executable
