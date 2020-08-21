@@ -7,6 +7,7 @@
 
 // Window dimensions
 const GLint WIDTH = 800, HEIGHT = 600;
+
 // Identifiers for the GL objects
 GLuint VAO, VBO, shaderProgram;
 
