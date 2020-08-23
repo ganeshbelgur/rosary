@@ -25,7 +25,9 @@ make clean
 ### Scenes
 The following is the description of the recipe scenes found under `./scenes` folder.
 
-##### simple-triangle
+#### simple-triangle
 An hello world program to render a triangle with a basic vertex and fragment shader.
 
+#### moving-triangle
+A demonstration of using GLM library to perform transforms on a simple triangle.
 

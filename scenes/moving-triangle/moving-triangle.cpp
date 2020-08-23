@@ -5,30 +5,46 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <glm/mat4x4.hpp>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 // Window dimensions
 const GLint WIDTH = 800, HEIGHT = 600;
 
 // Identifiers for the GL objects
-GLuint VAO, VBO, shaderProgram, uniformXMove;
+GLuint VAO, VBO, shaderProgram, uniformModel;
 
+// Parameters to rotate the triangle
+const float toRadians = 3.14159265f / 180.0f;
+float curveAngle = 0.0f;
+
+// Parameters to translate the triangle
 bool direction = true;
+const float triangleMaxOffset = 0.7f;
+const float triangleIncrement = 0.005f;
 float triangleOffset = 0.0f;
-float triangleMaxOffset = 0.7f;
-float triangleIncrement = 0.005f;
+
+// Parameters to scale the triangle
+bool scaleDirection = true;
+const float scaleMaxOffset = 0.8f;
+const float scaleMinOffset = 0.2f;
+const float scaleIncrement = 0.0005f;
+float scaleOffset = 0.2f;
 
 // Vertex Shader
-static const char* vShader = "                                                          \n\
-#version 330                                                                            \n\
-                                                                                        \n\
-layout (location = 0) in vec3 position;                                                 \n\
-                                                                                        \n\
-uniform float xMove;                                                                    \n\
-                                                                                        \n\
-void main()                                                                             \n\
-{                                                                                       \n\
-    gl_Position = vec4(0.4 * position.x + xMove, 0.4 * position.y, position.z, 1.0f);   \n\
+static const char* vShader = "                    \n\
+#version 330                                      \n\
+                                                  \n\
+layout (location = 0) in vec3 position;           \n\
+                                                  \n\
+// Demonstrating the use of uniform variable      \n\
+uniform mat4 model;                               \n\
+                                                  \n\
+void main()                                       \n\
+{                                                 \n\
+    gl_Position = model * vec4(position, 1.0f);   \n\
 }";
 
 // Fragment Shader
@@ -155,7 +171,9 @@ void CompileShaderProgram()
         return;
     }
 
-    uniformXMove = glGetUniformLocation(shaderProgram, "xMove");
+    // Get the location of the uniform variable that will
+    // provide the transform information to the shader
+    uniformModel = glGetUniformLocation(shaderProgram, "model");
 }
 
 int main()
@@ -210,12 +228,13 @@ int main()
     CreateTriangle();
     CompileShaderProgram();
 
-    // Loop until window is closed
+    // Loop until window is closed, a.k.a rendering loop
     while(!glfwWindowShouldClose(mainWindow))
     {
         // Get and handle user input events
         glfwPollEvents();
 
+        // Handling translation parameters
         if(direction)
         {
             triangleOffset += triangleIncrement;
@@ -230,6 +249,28 @@ int main()
             direction = !direction;
         }
 
+        // Handling rotation parameters
+        curveAngle += 0.1f;
+        if(curveAngle > 360)
+        {
+            curveAngle -= 360.0f;
+        }
+
+        // Handling scaling parameters
+        if(scaleDirection)
+        {
+            scaleOffset += scaleIncrement;
+        }
+        else
+        {
+            scaleOffset -= scaleIncrement;
+        }
+
+        if(scaleOffset > scaleMaxOffset || scaleOffset < scaleMinOffset)
+        {
+            scaleDirection = !scaleDirection;
+        }
+
         // Clear the window
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -237,7 +278,15 @@ int main()
         // Activate the required shader for drawing
         glUseProgram(shaderProgram);
 
-            glUniform1f(uniformXMove, triangleOffset);
+            // Generate the transformation matrix
+            glm::mat4 model(1.0f);
+            model = glm::rotate(model, curveAngle * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+            model = glm::translate(model, glm::vec3(triangleOffset, 0.0f, 0.0f));
+            model = glm::scale(model, glm::vec3(scaleOffset, scaleOffset, 1.0f));
+
+            // Bind the matrix data to the uniform variable in the shader
+            glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
             // Bind the required object's VAO
             glBindVertexArray(VAO);
                 // Perform the draw call to initialise the pipeline
