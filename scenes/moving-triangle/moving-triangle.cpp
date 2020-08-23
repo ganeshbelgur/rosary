@@ -48,14 +48,14 @@ void main()                                       \n\
 }";
 
 // Fragment Shader
-static const char* fShader = "                                      \n\
-#version 330                                                        \n\
-                                                                    \n\
-out vec4 color;                                                     \n\
-                                                                    \n\
-void main()                                                         \n\
-{                                                                   \n\
-    color = vec4(1.0f, 0.0f, 0.0f, 1.0f);                           \n\
+static const char* fShader = "                    \n\
+#version 330                                      \n\
+                                                  \n\
+out vec4 color;                                   \n\
+                                                  \n\
+void main()                                       \n\
+{                                                 \n\
+    color = vec4(1.0f, 0.0f, 0.0f, 1.0f);         \n\
 }";
 
 void CreateTriangle()
@@ -171,7 +171,7 @@ void CompileShaderProgram()
         return;
     }
 
-    // Get the location of the uniform variable that will
+    // Get the location of the uniform variable to
     // provide the transform information to the shader
     uniformModel = glGetUniformLocation(shaderProgram, "model");
 }
@@ -202,7 +202,7 @@ int main()
         return 1;
     }
 
-    // Set the OpenGL context for GLEW to use
+    // Set the OpenGL context for GLew to use
     glfwMakeContextCurrent(mainWindow);
 
     // Allow modern extension features
@@ -285,6 +285,7 @@ int main()
             model = glm::scale(model, glm::vec3(scaleOffset, scaleOffset, 1.0f));
 
             // Bind the matrix data to the uniform variable in the shader
+            // Parameters: location, number of matrices, transpose matrices?, pointer to the matrix/matrices
             glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
             // Bind the required object's VAO
@@ -295,6 +296,7 @@ int main()
             
             // Unbinding just for completeness
             glBindVertexArray(0);
+
         // Deactivating shaders for completeness
         glUseProgram(0);
 
