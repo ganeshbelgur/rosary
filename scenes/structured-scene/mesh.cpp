@@ -37,7 +37,7 @@ void Mesh::createMesh(GLfloat *vertices,
             // Setting up attribute pointer for shader access
             // Arguments: Layout location, number of components in the vertex position attribute, 
                 // type of the attribute, normalise?, stride, offset
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, (const void*)0);
             // Enables the vertex position attribute
                 // array specified at index 0
             glEnableVertexAttribArray(0);
