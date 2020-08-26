@@ -26,8 +26,21 @@ make clean
 The following is the description of the recipe scenes found under `./scenes` folder.
 
 #### 1. simple-triangle
-An hello world program to render a triangle with a basic vertex and fragment shader.
+Renders a simple triangle with a basic vertex and fragment shader.
+The shader sources are specified in the program itself as strings.
 
 #### 2. moving-triangle
-A demonstration of using GLM library to perform transforms on a simple triangle.
+Demonstrates use of GLM library to apply transforms on a simple triangle.
 
+#### 3. simple-interpolation
+Demonstrates interpolation of vertex color attribute in GLSL
+
+#### 4. first-3d-object
+Draws tetrahedron object using *Index Buffer Objects (IBOs/EBOs)* with depth testing enabled
+
+#### 5. perspective-projection
+Converts objects from local space to clip space with a perspective projection matrix applied.
+However, the view matrix is still missing because there is no camera system in place.
+
+#### 6. structured-scene
+Demonstrates clean separation of window management, shaders and meshes into their component classes to increase code reusability. For the first time, the shader sources are moved out into their respective files with `.glsl` extensions.
