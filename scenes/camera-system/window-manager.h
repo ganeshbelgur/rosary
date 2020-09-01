@@ -34,10 +34,10 @@ private:
     void createCallbacks();
 
     // To avoid having global functions as
-    // callback handlers, we are using the 
-    // following static handler methods to
-    // keep the functionality within the 
-    // class itself.
+    // I/O event callback handlers, we are 
+    // using the following static handler 
+    // methods to keep the functionality 
+    // within the class itself.
     static void handleKeys(
         GLFWwindow* glfwWindow,
         int key,
