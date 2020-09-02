@@ -13,15 +13,17 @@
 #include "window-manager.h"
 #include "mesh.h"
 #include "shader-manager.h"
+#include "camera.h"
 
 // Scene data
 WindowManager window;
 std::vector<Mesh*> meshes;
 std::vector<ShaderManager> shaderManagers;
+Camera camera;
 
 // Path to the shader files relative to Rosary's Makefile
-static const char* vertexShaderPath = "./scenes/structured-scene/vertex.glsl";
-static const char* fragmentShaderPath = "./scenes/structured-scene/fragment.glsl";
+static const char* vertexShaderPath = "./scenes/camera-system/vertex.glsl";
+static const char* fragmentShaderPath = "./scenes/camera-system/fragment.glsl";
 
 void CreateMeshes()
 {
@@ -71,6 +73,15 @@ int main()
     CreateMeshes();
     CreateShaderPrograms();
 
+    // Generate a camera with default
+        // parameters to navigate through the scene
+    camera = Camera();
+    camera.createCamera();
+
+    // Placeholder object for the camera's view matrix
+    glm::mat4 view(1.0f);
+    GLfloat previousTimeStamp = 0.0f;
+
     // Use GLM's perspective function to create the projection matrix
     // Arguments: Fov of the frustum in degrees, aspect ratio, 
         // distance from camera to near plane, distance from camera to the far plane
@@ -83,8 +94,19 @@ int main()
     // Loop until window is closed, a.k.a rendering loop
     while(!window.isWindowClosed())
     {
+        // Generate the delta time for current render loop iteration
+        GLfloat currentTimeStamp = glfwGetTime();
+        GLfloat deltaTime = currentTimeStamp - previousTimeStamp;
+        previousTimeStamp = currentTimeStamp;
+
         // Get and handle user input events
         glfwPollEvents();
+
+        // Update camera parameters based on user inputs and generate
+            // the view matrix.
+        camera.updateCameraMotion(window.getKeys(), deltaTime);
+        camera.updateCameraOrientation(window.getXChange(), window.getYChange());
+        camera.generateViewMatrix(view);
 
         // Color to be used for clearing the window
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -107,6 +129,12 @@ int main()
                 1,
                 GL_FALSE,
                 glm::value_ptr(model));
+
+            glUniformMatrix4fv(
+                shaderManagers[0].getUniformViewLocation(),
+                1,
+                GL_FALSE,
+                glm::value_ptr(view));
 
             glUniformMatrix4fv(
                 shaderManagers[0].getUniformProjectionLocation(),

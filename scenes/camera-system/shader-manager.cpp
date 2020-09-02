@@ -3,7 +3,8 @@
 ShaderManager::ShaderManager(): 
     m_shaderProgramID(0),
     m_uniformModelLocation(0),
-    m_uniformProjectionLocation(0)
+    m_uniformProjectionLocation(0),
+    m_uniformViewLocation(0)
 {
 }
 
@@ -91,10 +92,11 @@ void ShaderManager::compileShader(
         return;
     }
 
-    // Get the location of the uniform variable to
+    // Get the location of the uniform variables to
     // provide the transform information to the shader
     m_uniformModelLocation = glGetUniformLocation(m_shaderProgramID, "model");
     m_uniformProjectionLocation = glGetUniformLocation(m_shaderProgramID, "projection");
+    m_uniformViewLocation = glGetUniformLocation(m_shaderProgramID, "view");
 }
 
 void ShaderManager::AddShader(
@@ -152,6 +154,7 @@ void ShaderManager::clearShader()
 
     m_uniformModelLocation = 0;
     m_uniformProjectionLocation = 0;
+    m_uniformViewLocation = 0;
 }
 
 ShaderManager::~ShaderManager()

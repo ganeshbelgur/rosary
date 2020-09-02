@@ -19,6 +19,7 @@ public:
         const char* fragmentShaderPath);
     GLuint getUniformModelLocation() { return m_uniformModelLocation; }
     GLuint getUniformProjectionLocation() { return m_uniformProjectionLocation; }
+    GLuint getUniformViewLocation() { return m_uniformViewLocation; }
     void useShader();
     void clearShader();
 
@@ -35,5 +36,7 @@ private:
         GLenum shaderType);
 
     GLuint m_shaderProgramID, 
-        m_uniformModelLocation, m_uniformProjectionLocation;
+        m_uniformModelLocation, 
+        m_uniformProjectionLocation,
+        m_uniformViewLocation;
 };
