@@ -44,3 +44,6 @@ However, the view matrix is still missing because there is no camera system in p
 
 #### 6. structured-scene
 Demonstrates clean separation of window management, shaders and meshes into their component classes to increase code reusability. For the first time, the shader sources are moved out into their respective files with `.glsl` extensions.
+
+#### 7. camera-system
+Ability to move around the scene with a restricted camera system (FPS like) that calculates yaw, pitch, movement from user inputs via callbacks to create a view matrix. The delta time factor allows the speed of the camera in the scene to be consistent across different machines.
