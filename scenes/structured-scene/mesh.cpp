@@ -1,3 +1,27 @@
+//
+//  Rosary source code is Copyright(c) 2016-2020 Ganesh Belgur
+//
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are
+//  met:
+//  - Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  - Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+//  IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+//  TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+//  PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+//  HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+//  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+//  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+//  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+//  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+//  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
 #include "mesh.h"
 
 Mesh::Mesh() :
@@ -35,7 +59,7 @@ void Mesh::createMesh(GLfloat *vertices,
             glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * numberOfVertices, vertices, GL_STATIC_DRAW);
 
             // Setting up attribute pointer for shader access
-            // Arguments: Layout location, number of components in the vertex position attribute, 
+            // Arguments: layout location, number of components in the vertex position attribute, 
                 // type of the attribute, normalise?, stride, offset
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 3, (const void*)0);
             // Enables the vertex position attribute
@@ -63,20 +87,20 @@ void Mesh::renderMesh()
 void Mesh::clearMesh()
 {
     // To free VBO and IBO buffers use glDeleteBuffers()
-    if(m_iboID)
+    if (m_iboID)
     {
         glDeleteBuffers(1, &m_iboID);
         m_iboID = 0;
     }
 
-    if(m_vboID)
+    if (m_vboID)
     {
         glDeleteBuffers(1, &m_vboID);
         m_vboID = 0;
     }
 
     // To free a VAO use glDeleteVertexArrays()
-    if(m_vaoID)
+    if (m_vaoID)
     {
         glDeleteVertexArrays(1, &m_vaoID);
         m_vaoID = 0;

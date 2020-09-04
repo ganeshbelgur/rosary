@@ -1,3 +1,27 @@
+//
+//  Rosary source code is Copyright(c) 2016-2020 Ganesh Belgur
+//
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are
+//  met:
+//  - Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  - Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+//  IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+//  TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+//  PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+//  HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+//  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+//  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+//  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+//  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+//  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
 #include <iostream>
 #include <cstdio>
 #include <cstring>
@@ -95,7 +119,7 @@ void CreateTetrahedron()
             glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
             // Setting up attribute pointer for shader access
-            // Layout location, size, type, normalise?, stride, offset
+            // Arguments: layout location, size, type, normalise?, stride, offset
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
             // Layout location
             glEnableVertexAttribArray(0);
@@ -134,7 +158,7 @@ void AddShader(GLuint program, const char* shaderSource, GLenum shaderType)
     GLchar log[1024] = { 0 };
 
     glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
-    if(!result)
+    if (!result)
     {
         glGetShaderInfoLog(shader, sizeof(log), NULL, log);
         printf("Error: Compilation of shader of type %d failed, '%s'\n", shaderType, log);
@@ -151,7 +175,7 @@ void CompileShaderProgram()
     shaderProgram = glCreateProgram();
 
     // Check if it was created successfully
-    if(!shaderProgram)
+    if (!shaderProgram)
     {
         printf("Error: Generation of shader program failed!\n");
         return;
@@ -170,7 +194,7 @@ void CompileShaderProgram()
 
     // Find and log errors if any from the linking process done above
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &result);
-    if(!result)
+    if (!result)
     {
         glGetProgramInfoLog(shaderProgram, sizeof(log), NULL, log);
         printf("Error: Linking of the shader program failed, '%s'\n", log);
@@ -182,7 +206,7 @@ void CompileShaderProgram()
 
     // Find and log errors if any from the validation process done above
     glGetProgramiv(shaderProgram, GL_VALIDATE_STATUS, &result);
-    if(!result)
+    if (!result)
     {
         glGetProgramInfoLog(shaderProgram, sizeof(log), NULL, log);
         printf("Error: Shader program validation failed, '%s'", log);
@@ -197,7 +221,7 @@ void CompileShaderProgram()
 int main()
 {
     // Initial GLFW
-    if(!glfwInit())
+    if (!glfwInit())
     {
         printf("GLFW initialisation failed!");
         glfwTerminate();
@@ -227,7 +251,7 @@ int main()
     glewExperimental = GL_TRUE;
     
     /// Initialise Glew
-    if(glewInit() != GLEW_OK)
+    if (glewInit() != GLEW_OK)
     {
         printf("GLEW initialisation failed!");
         glfwDestroyWindow(mainWindow);
@@ -251,14 +275,14 @@ int main()
     CompileShaderProgram();
 
     // Loop until window is closed, a.k.a rendering loop
-    while(!glfwWindowShouldClose(mainWindow))
+    while (!glfwWindowShouldClose(mainWindow))
     {
         // Get and handle user input events
         glfwPollEvents();
 
         // Handling rotation parameters
         curveAngle += 0.8f;
-        if(curveAngle > 360)
+        if (curveAngle > 360)
         {
             curveAngle -= 360.0f;
         }

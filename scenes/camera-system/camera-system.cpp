@@ -1,3 +1,27 @@
+//
+//  Rosary source code is Copyright(c) 2016-2020 Ganesh Belgur
+//
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are
+//  met:
+//  - Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//  - Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in the
+//    documentation and/or other materials provided with the distribution.
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+//  IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+//  TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+//  PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+//  HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+//  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+//  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+//  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+//  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+//  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+
 #include <cstdio>
 #include <cstring>
 #include <cmath>
@@ -74,7 +98,7 @@ int main()
     CreateShaderPrograms();
 
     // Generate a camera with default
-        // parameters to navigate through the scene
+    // parameters to navigate through the scene
     camera = Camera();
     camera.createCamera();
 
@@ -92,7 +116,7 @@ int main()
                                 100.0f);
 
     // Loop until window is closed, a.k.a rendering loop
-    while(!window.isWindowClosed())
+    while (!window.isWindowClosed())
     {
         // Generate the delta time for current render loop iteration
         GLfloat currentTimeStamp = glfwGetTime();
@@ -103,7 +127,7 @@ int main()
         glfwPollEvents();
 
         // Update camera parameters based on user inputs and generate
-            // the view matrix.
+        // the view matrix.
         camera.updateCameraMotion(window.getKeys(), deltaTime);
         camera.updateCameraOrientation(window.getXChange(), window.getYChange());
         camera.generateViewMatrix(view);
