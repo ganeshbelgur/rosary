@@ -53,3 +53,7 @@ Demonstrates clean separation of window management, shader management and mesh g
 
 #### 7. camera-system
 Adds ability to move around the scene with a restricted camera system (*First Person Shooter*) that calculates yaw, pitch, movement from user inputs via callbacks to create a view matrix. The delta time factor allows the speed of the camera in the scene to be consistent across different machines.
+
+#### 8. simple-texture-mapping
+Demonstrates texture mapping by loading two different image textures off disk using the stb library. Further, texture parameters such as texture wrapping, texture filtering with handling of texture units and texture samplers inside shaders are also demonstrated.
+

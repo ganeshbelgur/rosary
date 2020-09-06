@@ -87,7 +87,7 @@ int main()
 {
     // Create a glfw window with an OpenGL context
     window = WindowManager();
-    if (!window.createWindow(800, 600, "Structured Scene"))
+    if (!window.createWindow(800, 600, "Camera System"))
     {
         printf("Error: Window was not created, exiting the program!\n");
         return 1;

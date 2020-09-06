@@ -247,7 +247,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     // Initial a GLFW window with a given size
-    GLFWwindow *mainWindow = glfwCreateWindow(WIDTH, HEIGHT, "OpenGLApp", NULL, NULL);
+    GLFWwindow *mainWindow = glfwCreateWindow(WIDTH, HEIGHT, "Perspective Projection", NULL, NULL);
     if (!mainWindow)
     {
         printf("GLFW window creation failed!");
