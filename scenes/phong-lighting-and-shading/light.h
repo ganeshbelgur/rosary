@@ -38,7 +38,6 @@ public:
     Light();
 
     void setLightColor(glm::vec3 lightColor);
-    void setDirectLightDirection(glm::vec3 directLightDirection);
     void setAmbientLightIntensity(GLfloat ambientLightIntensity);
     void setDiffuseLightIntensity(GLfloat diffuseLightIntensity);
 
@@ -46,18 +45,16 @@ public:
     // related data into the shaders 
     void useLight(
         GLuint lightColorLocation,
-        GLuint directLightDirectionLocation,
         GLuint ambientLightIntensityLocation,
         GLuint diffuseLightIntensityLocation);
 
     ~Light();
 
-private:
+protected:
     GLfloat m_ambientLightIntensity;
     GLfloat m_diffuseLightIntensity;
 
     // used for all lighting conditions 
     // i.e. ambient, diffuse and specular
     glm::vec3 m_lightColor;
-    glm::vec3 m_directLightDirection;
 };

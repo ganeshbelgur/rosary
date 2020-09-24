@@ -73,6 +73,11 @@ glm::vec3 Camera::getCameraPosition()
     return m_position;
 }
 
+glm::vec3 Camera::getCameraFrontDirection()
+{
+    return normalize(m_front);
+}
+
 void Camera::updateCameraMotion(bool* keys, GLfloat deltaTime)
 {
     // Calculate camera speed based on the delta time

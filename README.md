@@ -58,5 +58,5 @@ Adds ability to move around the scene with a restricted camera system (*First Pe
 Demonstrates texture mapping by loading two different image textures off disk using the stb library. Further, texture parameters such as texture wrapping, texture filtering with handling of texture units and texture samplers inside shaders are also demonstrated.
 
 #### 9. phong-lighting-and-shading
-Demonstrates scene lighting with Phong lighting and shading models
+Demonstrates scene lighting with Phong lighting and shading models with interpolated normals. The lighting components are broken up into ambient lighting, diffuse lighting and specular lighting. Further, the scene demonstrates the use of a single directional light source with multiple point lights and spot lights (with feathered edges).
 

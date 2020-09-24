@@ -1,7 +1,7 @@
 # Variables required during compilation
 CXX = g++
 CFLAGS = -Wall
-LDFLAGS = -lglfw -lGLEW -lGL -lX11 -lpthread -lXrandr -lXi -ldl
+LDFLAGS = -lglfw -lGLEW -lGL -lX11 -lpthread -ldl
 INCLUDE_PATH = ./thirdparty/include
 LIBRARY_PATH = ./thirdparty/lib
 TOP_LEVEL_SOURCE_DIR = scenes

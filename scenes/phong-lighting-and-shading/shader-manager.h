@@ -31,6 +31,11 @@
 
 #include <GL/glew.h>
 
+#include "constants.h"
+#include "directionalLight.h"
+#include "pointLight.h"
+#include "spotLight.h"
+
 class ShaderManager
 {
 public:
@@ -45,13 +50,14 @@ public:
     GLuint getUniformModelLocation();
     GLuint getUniformProjectionLocation();
     GLuint getUniformViewLocation();
-    GLuint getUniformLightColorLocation();
-    GLuint getUniformDirectLightDirectionLocation();
-    GLuint getUniformAmbientIntensityLocation();
-    GLuint getUniformDiffuseIntensityLocation();
     GLuint getUniformSpecularIntensityLocation();
     GLuint getUniformShininessLocation();
     GLuint getUniformCameraPosition();
+
+    void setDirectionalLightData(DirectionalLight *light);
+    void setPointLightsData(PointLight *lights, unsigned int lightCount);
+    void setSpotLightsData(SpotLight *lights, unsigned int lightCount);
+
     void useShader();
     void clearShader();
 
@@ -68,15 +74,54 @@ private:
         const char* shaderSource,
         GLenum shaderType);
 
+    struct LightBaseProperties
+    {
+        LightBaseProperties();
+        void resetInstance();
+
+        GLuint m_uniformLightColorLocation,
+            m_uniformAmbientIntensityLocation,
+            m_uniformDiffuseIntensityLocation;
+    };
+
+    struct DirectLightProperties
+    {
+        DirectLightProperties();
+        void resetInstance();
+
+        LightBaseProperties base;
+        GLuint m_uniformDirectLightDirectionLocation;
+    } m_uniformDirectionalLight;
+
+    struct PointLightProperties
+    {
+        PointLightProperties();
+        void resetInstance();
+ 
+        LightBaseProperties base;
+        GLuint m_uniformPointLightPositionLocation,
+            m_uniformConstantLocation,
+            m_uniformLinearLocation,
+            m_uniformExponentLocation;
+    } m_uniformPointLights[MAX_POINT_LIGHTS];
+
+    struct SpotLightProperties
+    {
+        SpotLightProperties();
+        void resetInstance();
+
+        PointLightProperties pointLightBase;
+        GLuint m_uniformSpotLightDirectionLocation,
+            m_uniformCosineCutOffLocation;
+    } m_uniformSpotLights[MAX_SPOT_LIGHTS];
+
     GLuint m_shaderProgramID, 
         m_uniformModelLocation, 
         m_uniformProjectionLocation,
         m_uniformViewLocation,
-        m_uniformLightColorLocation,
-        m_uniformDirectLightDirectionLocation,
-        m_uniformAmbientIntensityLocation,
-        m_uniformDiffuseIntensityLocation,
         m_uniformSpecularIntensityLocation,
         m_uniformShininessLocation,
-        m_uniformCameraPosition;
+        m_uniformCameraPosition,
+        m_uniformNumberOfPointLightsLocation,
+        m_uniformNumberOfSpotLightsLocation;
 };

@@ -21,58 +21,21 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-
 #pragma once
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "light.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp> // for glm::lookAt()
-
-class Camera
+class DirectionalLight : public Light
 {
 public:
-    // Generates a camera at origin and pointing in the
-    // negative z-axis
-    Camera();
-    
-    // Add more setters here if required
-    void setPosition(glm::vec3 position);
-    void setWorldUp(glm::vec3 worldUp);
-    void setYawInDegrees(GLfloat yaw);
-    void setPitchInDegrees(GLfloat pitch);
-    void setMoveSpeed(GLfloat moveSpeed);
-    void setCursorMoveSpeed(GLfloat cursorMoveSpeed);
-    
-    // Add more getters here if required
-    glm::vec3 getCameraPosition();
-    glm::vec3 getCameraFrontDirection();
+    DirectionalLight();
+    void setDirectLightDirection(glm::vec3 directLightDirection);
+    void useLight(GLuint lightColorLocation,
+        GLuint ambientLightIntensityLocation,
+        GLuint diffuseLightIntensityLocation,
+        GLuint directLightDirectionLocation);
 
-    // Updates camera parameters to reflect the user inputs
-    void updateCameraMotion(bool* keys, GLfloat deltaTime);
-    void updateCameraOrientation(GLfloat xChange, GLfloat yChange);
-    
-    // Generates the final view matrix 
-    void generateViewMatrix(glm::mat4 &viewMatrix);
-
-    ~Camera();
-
+    ~DirectionalLight();
 private:
-    // Recalculates all the camera 
-    // parameters
-    void updateCameraVectors();
-
-    // Camera parameters
-    glm::vec3 m_position;
-    glm::vec3 m_front;
-    glm::vec3 m_right;
-    glm::vec3 m_up;
-    glm::vec3 m_worldUp;
-
-    // Camera movement parameters
-    GLfloat m_yaw;
-    GLfloat m_pitch;
-    GLfloat m_moveSpeed;
-    GLfloat m_cursorMoveSpeed;
+    glm::vec3 m_directLightDirection;
 };

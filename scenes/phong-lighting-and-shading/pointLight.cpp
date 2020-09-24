@@ -22,57 +22,70 @@
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#pragma once
+#include "pointLight.h"
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp> // for glm::lookAt()
-
-class Camera
+PointLight::PointLight() :
+    Light(),
+    m_position(glm::vec3(0.0f, 0.0f, 0.0f)),
+    m_constant(1.0f),
+    m_linear(0.0f),
+    m_exponent(0.0f)
 {
-public:
-    // Generates a camera at origin and pointing in the
-    // negative z-axis
-    Camera();
+}
+
+void PointLight::setPosition(glm::vec3 position)
+{
+    m_position = position;
+}
+
+void PointLight::setConstantAttenuationComponent(GLfloat constant)
+{
+    m_constant = constant;
+}
+
+void PointLight::setLinearAttenuationComponent(GLfloat linear)
+{
+    m_linear = linear;
+}
+
+void PointLight::setExponentAttenuationComponent(GLfloat exponent)
+{
+    m_exponent = exponent;
+}
+
+void PointLight::useLight(GLuint lightColorLocation,
+        GLuint ambientLightIntensityLocation,
+        GLuint diffuseLightIntensityLocation,
+        GLuint positionLocation,
+        GLuint constantLocation,
+        GLuint linearLocation,
+        GLuint exponentLocation)
+{
+    Light::useLight(
+        lightColorLocation,
+        ambientLightIntensityLocation,
+        diffuseLightIntensityLocation);
+
+    glUniform3f(
+        positionLocation,
+        m_position.x,
+        m_position.y,
+        m_position.z);
     
-    // Add more setters here if required
-    void setPosition(glm::vec3 position);
-    void setWorldUp(glm::vec3 worldUp);
-    void setYawInDegrees(GLfloat yaw);
-    void setPitchInDegrees(GLfloat pitch);
-    void setMoveSpeed(GLfloat moveSpeed);
-    void setCursorMoveSpeed(GLfloat cursorMoveSpeed);
+    glUniform1f(
+        constantLocation,
+        m_constant
+    );
+
+    glUniform1f(
+        linearLocation,
+        m_linear);
     
-    // Add more getters here if required
-    glm::vec3 getCameraPosition();
-    glm::vec3 getCameraFrontDirection();
+    glUniform1f(
+        exponentLocation,
+        m_exponent);
+}
 
-    // Updates camera parameters to reflect the user inputs
-    void updateCameraMotion(bool* keys, GLfloat deltaTime);
-    void updateCameraOrientation(GLfloat xChange, GLfloat yChange);
-    
-    // Generates the final view matrix 
-    void generateViewMatrix(glm::mat4 &viewMatrix);
-
-    ~Camera();
-
-private:
-    // Recalculates all the camera 
-    // parameters
-    void updateCameraVectors();
-
-    // Camera parameters
-    glm::vec3 m_position;
-    glm::vec3 m_front;
-    glm::vec3 m_right;
-    glm::vec3 m_up;
-    glm::vec3 m_worldUp;
-
-    // Camera movement parameters
-    GLfloat m_yaw;
-    GLfloat m_pitch;
-    GLfloat m_moveSpeed;
-    GLfloat m_cursorMoveSpeed;
-};
+PointLight::~PointLight()
+{
+}

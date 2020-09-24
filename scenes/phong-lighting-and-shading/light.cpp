@@ -27,19 +27,13 @@
 Light::Light() :
     m_ambientLightIntensity(1.0f),
     m_diffuseLightIntensity(1.0f),
-    m_lightColor(glm::vec3(1.0f, 1.0f, 1.0f)),
-    m_directLightDirection(glm::vec3(0.0f, -1.0f, 0.0f))
+    m_lightColor(glm::vec3(1.0f, 1.0f, 1.0f))
 {
 }
 
 void Light::setLightColor(glm::vec3 lightColor)
 {
     m_lightColor = lightColor;
-}
-
-void Light::setDirectLightDirection(glm::vec3 directLightDirection)
-{
-    m_directLightDirection = directLightDirection;
 }
 
 void Light::setAmbientLightIntensity(GLfloat ambientLightIntensity)
@@ -54,7 +48,6 @@ void Light::setDiffuseLightIntensity(GLfloat diffuseLightIntensity)
 
 void Light::useLight(
         GLuint lightColorLocation,
-        GLuint directLightDirectionLocation,
         GLuint ambientLightIntensityLocation,
         GLuint diffuseLightIntensityLocation)
 {
@@ -63,12 +56,6 @@ void Light::useLight(
         m_lightColor.x,
         m_lightColor.y,
         m_lightColor.z);
-
-    glUniform3f(
-        directLightDirectionLocation,
-        m_directLightDirection.x,
-        m_directLightDirection.y,
-        m_directLightDirection.z);
 
     glUniform1f(ambientLightIntensityLocation, m_ambientLightIntensity);
     glUniform1f(diffuseLightIntensityLocation, m_diffuseLightIntensity);

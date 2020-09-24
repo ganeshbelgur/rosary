@@ -22,57 +22,38 @@
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#pragma once
+#include "directionalLight.h"
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp> // for glm::lookAt()
-
-class Camera
+DirectionalLight::DirectionalLight() : 
+    Light(),
+    m_directLightDirection(glm::vec3(0.0f, -1.0f, 0.0f))
 {
-public:
-    // Generates a camera at origin and pointing in the
-    // negative z-axis
-    Camera();
-    
-    // Add more setters here if required
-    void setPosition(glm::vec3 position);
-    void setWorldUp(glm::vec3 worldUp);
-    void setYawInDegrees(GLfloat yaw);
-    void setPitchInDegrees(GLfloat pitch);
-    void setMoveSpeed(GLfloat moveSpeed);
-    void setCursorMoveSpeed(GLfloat cursorMoveSpeed);
-    
-    // Add more getters here if required
-    glm::vec3 getCameraPosition();
-    glm::vec3 getCameraFrontDirection();
+}
 
-    // Updates camera parameters to reflect the user inputs
-    void updateCameraMotion(bool* keys, GLfloat deltaTime);
-    void updateCameraOrientation(GLfloat xChange, GLfloat yChange);
-    
-    // Generates the final view matrix 
-    void generateViewMatrix(glm::mat4 &viewMatrix);
+void DirectionalLight::setDirectLightDirection(glm::vec3 directLightDirection)
+{
+    m_directLightDirection = glm::normalize(directLightDirection);
+}
 
-    ~Camera();
+void DirectionalLight::useLight(
+        GLuint lightColorLocation,
+        GLuint ambientLightIntensityLocation,
+        GLuint diffuseLightIntensityLocation,
+        GLuint directLightDirectionLocation)
+{
+    Light::useLight(
+        lightColorLocation,
+        ambientLightIntensityLocation,
+        diffuseLightIntensityLocation);
 
-private:
-    // Recalculates all the camera 
-    // parameters
-    void updateCameraVectors();
+    glUniform3f(
+        directLightDirectionLocation,
+        m_directLightDirection.x,
+        m_directLightDirection.y,
+        m_directLightDirection.z);
+}
 
-    // Camera parameters
-    glm::vec3 m_position;
-    glm::vec3 m_front;
-    glm::vec3 m_right;
-    glm::vec3 m_up;
-    glm::vec3 m_worldUp;
+DirectionalLight::~DirectionalLight()
+{
+}
 
-    // Camera movement parameters
-    GLfloat m_yaw;
-    GLfloat m_pitch;
-    GLfloat m_moveSpeed;
-    GLfloat m_cursorMoveSpeed;
-};

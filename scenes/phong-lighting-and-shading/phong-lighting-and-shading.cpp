@@ -39,7 +39,7 @@
 #include "shader-manager.h"
 #include "camera.h"
 #include "texture.h"
-#include "light.h"
+#include "directionalLight.h"
 #include "material.h"
 
 // Scene data
@@ -47,9 +47,12 @@ WindowManager window;
 std::vector<Mesh*> meshes;
 std::vector<ShaderManager> shaderManagers;
 Camera camera;
-Light light;
+DirectionalLight directionalLight;
+PointLight pointLights[MAX_POINT_LIGHTS];
+SpotLight spotLights[MAX_SPOT_LIGHTS];
 Texture brickTexture;
 Texture dirtTexture;
+Texture plainTexture;
 Material shinyMaterial;
 Material dullMaterial;
 
@@ -144,18 +147,18 @@ void CreateMeshes()
     // using indices (of vertices array) for 
     // index drawing
     unsigned int indices[] = {
-        0, 1, 3,
-        0, 3, 2,
-        3, 1, 2,
-        1, 0, 2
+        0, 3, 1,
+        1, 3, 2,
+        2, 3, 0,
+        0, 1, 2
     };
 
     // Vertex positions for the tetrahedron
     GLfloat vertices[] = {
         -1.0f, -1.0f, -0.6f,    0.0f, 0.0f,    0.0f, 0.0f, 0.0f,
+         0.0f, -1.0f,  1.0f,    0.5f, 0.0f,    0.0f, 0.0f, 0.0f,
          1.0f, -1.0f, -0.6f,    1.0f, 0.0f,    0.0f, 0.0f, 0.0f,
-         0.0f,  1.0f,  0.0f,    0.5f, 1.0f,    0.0f, 0.0f, 0.0f,
-         0.0f, -1.0f,  1.0f,    0.5f, 0.0f,    0.0f, 0.0f, 0.0f
+         0.0f,  1.0f,  0.0f,    0.5f, 1.0f,    0.0f, 0.0f, 0.0f
     };
     
     // Calculate the averaged normals required
@@ -171,6 +174,21 @@ void CreateMeshes()
         5
     );
 
+    // Specifying the triangular surfaces
+    // for the floor
+    unsigned int floorIndices[] = {
+        0, 2, 1,
+        1, 2, 3
+    };
+
+    // Vertex positions for the floor
+    GLfloat floorVertices[] = {
+        -10.0f,  0.0f, -10.0f,    0.0f,  0.0f,    0.0f, -1.0f, 0.0f,
+         10.0f,  0.0f, -10.0f,   10.0f,  0.0f,    0.0f, -1.0f, 0.0f,
+        -10.0f,  0.0f,  10.0f,    0.0f, 10.0f,    0.0f, -1.0f, 0.0f,
+         10.0f,  0.0f,  10.0f,   10.0f, 10.0f,    0.0f, -1.0f, 0.0f
+    };
+
     // Generate the tetrahedron meshes
     Mesh *firstTetrahedron = new Mesh();
     firstTetrahedron->createMesh(vertices, indices, 32, 12);
@@ -179,6 +197,10 @@ void CreateMeshes()
     Mesh *secondTetrahedron = new Mesh();
     secondTetrahedron->createMesh(vertices, indices, 32, 12);
     meshes.push_back(secondTetrahedron);
+
+    Mesh *floor = new Mesh();
+    floor->createMesh(floorVertices, floorIndices, 32, 6);
+    meshes.push_back(floor);
 }
 
 void CreateShaderPrograms()
@@ -198,7 +220,7 @@ int main()
         printf("Error: Window was not created, exiting the program!\n");
         return 1;
     }
-
+//--------------------------------------------------------------------------------------------
     // Generate the meshes and shaders
     CreateMeshes();
     CreateShaderPrograms();
@@ -207,40 +229,11 @@ int main()
     // parameters to navigate through the scene
     camera = Camera();
 
-    // Load texture
-    brickTexture = Texture();
-    brickTexture.createTexture("./scenes/simple-texture-mapping/texture-images/brick.png");
-    if (!brickTexture.loadTexture())
-    {
-        printf("Failed to load the brick texture!\n");
-        return 1;
-    }
-
-    dirtTexture = Texture();
-    dirtTexture.createTexture("./scenes/simple-texture-mapping/texture-images/dirt.png");
-    if (!dirtTexture.loadTexture())
-    {
-        printf("Failed to load the dirt texture!\n");
-        return 1;
-    }
-
-    // Initialising the lights in the scene
-    light = Light();
-    light.setDirectLightDirection(glm::vec3(1.0f, 2.0f, 3.0f));
-    light.setAmbientLightIntensity(0.5f);
-    light.setDiffuseLightIntensity(0.0f);
-
-    // Initialise the materials for the objects
-    shinyMaterial = Material();
-    dullMaterial = Material();
-
-    shinyMaterial.setSpecularIntensity(1.0f);
-    shinyMaterial.setShininess(32.0f);
-    dullMaterial.setSpecularIntensity(0.5f);
-    dullMaterial.setShininess(4.0f);
-
     // Placeholder object for the camera's view matrix
     glm::mat4 view(1.0f);
+
+    // Initial previous time stamp value for delta 
+    // time calculations in the render loop
     GLfloat previousTimeStamp = 0.0f;
 
     // Use GLM's perspective function to create the projection matrix
@@ -251,17 +244,111 @@ int main()
                                 window.getBufferAspectRatio(),
                                 0.1f,
                                 100.0f);
+//--------------------------------------------------------------------------------------------
+    // Load texture
+    brickTexture = Texture();
+    brickTexture.createTexture("./scenes/phong-lighting-and-shading/texture-images/brick.png");
+    if (!brickTexture.loadTexture())
+    {
+        printf("Failed to load the brick texture!\n");
+        return 1;
+    }
 
+    dirtTexture = Texture();
+    dirtTexture.createTexture("./scenes/phong-lighting-and-shading/texture-images/dirt.png");
+    if (!dirtTexture.loadTexture())
+    {
+        printf("Failed to load the dirt texture!\n");
+        return 1;
+    }
+
+    plainTexture = Texture();
+    plainTexture.createTexture("./scenes/phong-lighting-and-shading/texture-images/plain.png");
+    if (!plainTexture.loadTexture())
+    {
+        printf("Failed to load the plain texture!\n");
+        return 1;
+    }
+//--------------------------------------------------------------------------------------------
+    // Initialising the lights in the scene
+    // Initialise a direct light
+    directionalLight = DirectionalLight();
+    directionalLight.setDirectLightDirection(glm::vec3(2.0f, -1.0f, -2.0f));
+    directionalLight.setAmbientLightIntensity(0.1f);
+    directionalLight.setDiffuseLightIntensity(0.1f);
+
+    // Initialise point lights
+    unsigned int numberOfPointLights = 0;
+
+    // Blue colored point light
+    pointLights[0] = PointLight();
+    pointLights[0].setLightColor(glm::vec3(0.0f, 0.0f, 1.0f));
+    pointLights[0].setAmbientLightIntensity(0.0f);
+    pointLights[0].setDiffuseLightIntensity(1.0f);
+    pointLights[0].setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    pointLights[0].setConstantAttenuationComponent(0.3f);
+    pointLights[0].setLinearAttenuationComponent(0.2f);
+    pointLights[0].setExponentAttenuationComponent(0.1f);
+    ++numberOfPointLights;
+
+    // Green colored point light
+    pointLights[1] = PointLight();
+    pointLights[1].setLightColor(glm::vec3(0.0f, 1.0f, 0.0f));
+    pointLights[1].setAmbientLightIntensity(0.0f);
+    pointLights[1].setDiffuseLightIntensity(1.0f);
+    pointLights[1].setPosition(glm::vec3(-4.0f, 2.0f, 0.0f));
+    pointLights[1].setConstantAttenuationComponent(0.3f);
+    pointLights[1].setLinearAttenuationComponent(0.1f);
+    pointLights[1].setExponentAttenuationComponent(0.1f);
+    ++numberOfPointLights;
+
+    // Initialise spot lights
+    unsigned int numberOfSpotLights = 0;
+
+    // White colored spot light
+    spotLights[0] = SpotLight();
+    spotLights[0].setLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
+    spotLights[0].setAmbientLightIntensity(0.0f);
+    spotLights[0].setDiffuseLightIntensity(2.0f);
+    spotLights[0].setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+    spotLights[0].setConstantAttenuationComponent(1.0f);
+    spotLights[0].setLinearAttenuationComponent(0.0f);
+    spotLights[0].setExponentAttenuationComponent(0.0f);
+    spotLights[0].setSpotLightDirection(glm::vec3(0.0f, -1.0f, 0.0f));
+    spotLights[0].setCutOffAngleInDegrees(20.0f);
+    ++numberOfSpotLights;
+
+    spotLights[1] = SpotLight();
+    spotLights[1].setLightColor(glm::vec3(1.0f, 1.0f, 1.0f));
+    spotLights[1].setAmbientLightIntensity(0.0f);
+    spotLights[1].setDiffuseLightIntensity(1.0f);
+    spotLights[1].setPosition(glm::vec3(0.0f, -1.5f, 0.0f));
+    spotLights[1].setConstantAttenuationComponent(1.0f);
+    spotLights[1].setLinearAttenuationComponent(0.0f);
+    spotLights[1].setExponentAttenuationComponent(0.0f);
+    spotLights[1].setSpotLightDirection(glm::vec3(-100.0f, -1.0f, 0.0f));
+    spotLights[1].setCutOffAngleInDegrees(20.0f);
+    ++numberOfSpotLights;
+//--------------------------------------------------------------------------------------------
+    // Initialise the materials for the objects
+    shinyMaterial = Material();
+    dullMaterial = Material();
+
+    shinyMaterial.setSpecularIntensity(4.0f);
+    shinyMaterial.setShininess(256.0f);
+    dullMaterial.setSpecularIntensity(0.5f);
+    dullMaterial.setShininess(4.0f);
+//--------------------------------------------------------------------------------------------
     // Loop until window is closed, a.k.a rendering loop
     while (!window.isWindowClosed())
     {
+        // Get and handle user input events
+        glfwPollEvents();
+
         // Generate the delta time for current render loop iteration
         GLfloat currentTimeStamp = glfwGetTime();
         GLfloat deltaTime = currentTimeStamp - previousTimeStamp;
         previousTimeStamp = currentTimeStamp;
-
-        // Get and handle user input events
-        glfwPollEvents();
 
         // Update camera parameters based on user inputs and generate
         // the view matrix.
@@ -277,40 +364,7 @@ int main()
         // Activate the required shader for drawing
         shaderManagers[0].useShader();
 
-            // Set camera position in the shader
-            // for specular lighting calculations
-            glUniform3f(
-                shaderManagers[0].getUniformCameraPosition(),
-                camera.getCameraPosition().x,
-                camera.getCameraPosition().y,
-                camera.getCameraPosition().z);
-
-            // Generate the transformation matrix
-            glm::mat4 model(1.0f);
-            model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
-
-            // Adding a light to the scene
-            light.useLight(
-                shaderManagers[0].getUniformLightColorLocation(),
-                shaderManagers[0].getUniformDirectLightDirectionLocation(),
-                shaderManagers[0].getUniformAmbientIntensityLocation(),
-                shaderManagers[0].getUniformDiffuseIntensityLocation());
-            
-            // Add specular material properties
-            shinyMaterial.useMaterial(
-                shaderManagers[0].getUniformSpecularIntensityLocation(),
-                shaderManagers[0].getUniformShininessLocation()
-            );
-
-            // Bind the matrix data to the uniform variable in the shader
-            // Arguments: location, number of matrices, 
-                // transpose matrices?, pointer to the matrix/matrices
-            glUniformMatrix4fv(
-                shaderManagers[0].getUniformModelLocation(),
-                1,
-                GL_FALSE,
-                glm::value_ptr(model));
-
+            // Setting up the view and projection matrices
             glUniformMatrix4fv(
                 shaderManagers[0].getUniformViewLocation(),
                 1,
@@ -323,8 +377,50 @@ int main()
                 GL_FALSE,
                 glm::value_ptr(projection));
 
+            // Set camera position in the shader
+            // for specular lighting calculations
+            glUniform3f(
+                shaderManagers[0].getUniformCameraPosition(),
+                camera.getCameraPosition().x,
+                camera.getCameraPosition().y,
+                camera.getCameraPosition().z);
+            
+            // Fixing a spot light to the camera to make it appear
+            // as a FPS torch light
+            glm::vec3 cameraPosition = camera.getCameraPosition();
+            cameraPosition.x += 0.3;
+            cameraPosition.y -= 0.3; 
+            spotLights[0].setPosition(cameraPosition);
+            spotLights[0].setSpotLightDirection(camera.getCameraFrontDirection());
+            
+            // Adding lights to the scene
+            shaderManagers[0].setDirectionalLightData(&directionalLight);
+            shaderManagers[0].setPointLightsData(pointLights, numberOfPointLights);
+            shaderManagers[0].setSpotLightsData(spotLights, numberOfSpotLights);
+
+        // Begin rendering the individual models
+            // Generate the model matrix for the first tetrahedron
+            glm::mat4 model(1.0f);
+            model = glm::translate(model, glm::vec3(0.0f, 0.0f, -2.5f));
+
+            // Bind the matrix data to the uniform variable in the shader
+            // Arguments: location, number of matrices, 
+                // transpose matrices?, pointer to the matrix/matrices
+            glUniformMatrix4fv(
+                shaderManagers[0].getUniformModelLocation(),
+                1,
+                GL_FALSE,
+                glm::value_ptr(model));
+
             // Using the brick texture to render the first tetrahedron
             brickTexture.useTexture();
+
+            // Add in the shiny specular material properties
+            // for the first tetrahedron
+            shinyMaterial.useMaterial(
+                shaderManagers[0].getUniformSpecularIntensityLocation(),
+                shaderManagers[0].getUniformShininessLocation()
+            );
 
             // Render the first tetrahedron
             meshes[0]->renderMesh();
@@ -339,17 +435,43 @@ int main()
                 1,
                 GL_FALSE,
                 glm::value_ptr(model));
-            
+
+            // Using the dirt texture to render the second tetrahedron
+            dirtTexture.useTexture();
+
+            // Add in the dull material properties
+            // for the second tetrahedron
             dullMaterial.useMaterial(
                 shaderManagers[0].getUniformSpecularIntensityLocation(),
                 shaderManagers[0].getUniformShininessLocation()
             );
-
-            // Using the dirt texture to render the second tetrahedron
-            dirtTexture.useTexture();
           
             // Render the second tetrahedron
             meshes[1]->renderMesh();
+
+            // Setting up the model matrix for the floor
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
+
+            // Setting the new model texture into the shader
+            glUniformMatrix4fv(
+                shaderManagers[0].getUniformModelLocation(),
+                1,
+                GL_FALSE,
+                glm::value_ptr(model));
+
+            // Using the plain texture to render the floor
+            plainTexture.useTexture();
+
+            // Add in the dull material properties
+            // for the second tetrahedron
+            shinyMaterial.useMaterial(
+                shaderManagers[0].getUniformSpecularIntensityLocation(),
+                shaderManagers[0].getUniformShininessLocation()
+            );
+          
+            // Render the floor
+            meshes[2]->renderMesh();
 
         // Deactivating shaders for completeness
         glUseProgram(0);
