@@ -60,3 +60,5 @@ Demonstrates texture mapping by loading two different image textures off disk us
 #### 9. phong-lighting-and-shading
 Demonstrates scene lighting with Phong lighting and shading models with interpolated normals. The lighting components are broken up into ambient lighting, diffuse lighting and specular lighting. Further, the scene demonstrates the use of a single directional light source with multiple point lights and spot lights (with feathered edges).
 
+#### 10. loading-complex-models
+Demonstrates the use of Open Assimp library to load two complex models. The first model is a X-wing spacecraft from Star Wars and the second model is a Black Hawk, a helicopter used for military operations.
