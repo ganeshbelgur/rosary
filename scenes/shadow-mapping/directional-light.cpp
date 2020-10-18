@@ -28,19 +28,19 @@
 
 DirectionalLight::DirectionalLight() : 
     Light(),
-    m_directLightDirection(glm::vec3(0.0f, -1.0f, 0.0f)),
+    m_directLightDirection(glm::vec3(0.0f, -7.0f, -1.0f)),
     m_shadowMapWidth(2048),
     m_shadowMapHeight(2048),
     m_directLightShadowMap(new DirectionalLightShadowMap())
 {
-    m_lightProjectMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
+    m_lightProjectMatrix = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.1f, 100.0f);
     m_directLightShadowMap->setShadowWidth(m_shadowMapWidth);
     m_directLightShadowMap->setShadowHeight(m_shadowMapHeight);
 }
 
 void DirectionalLight::setDirectLightDirection(glm::vec3 directLightDirection)
 {
-    m_directLightDirection = glm::normalize(directLightDirection);
+    m_directLightDirection = directLightDirection;
 }
 
 void DirectionalLight::useLight(
@@ -73,10 +73,11 @@ DirectionalLightShadowMap* DirectionalLight::getShadowMap()
 
 glm::mat4 DirectionalLight::computeProjectionViewLightTransform()
 {
-    return m_lightProjectMatrix * glm::lookAt(
+    m_lightProjectMatrix = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, 0.1f, 100.0f);
+    return (m_lightProjectMatrix * glm::lookAt(
                                     -m_directLightDirection,
                                     glm::vec3(0.0f, 0.0f, 0.0f),
-                                    glm::vec3(0.0f, 1.0f, 0.0f));;
+                                    glm::vec3(0.0f, 1.0f, 0.0f)));
 }
 
 DirectionalLight::~DirectionalLight()

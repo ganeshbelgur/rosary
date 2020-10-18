@@ -377,8 +377,7 @@ void RenderDirectLightShadowMap(DirectionalLight *light)
     glClear(GL_DEPTH_BUFFER_BIT);
 
     uniformModelLocation = directLightShadowMapShader.getUniformModelLocation();
-    directLightShadowMapShader.setDirectionalLightTransform(
-        light->computeProjectionViewLightTransform());
+    directLightShadowMapShader.setDirectionalLightTransform(light->computeProjectionViewLightTransform());
     
     // Render the whole scene
     RenderScene();
@@ -505,7 +504,7 @@ int main()
     directionalLight = DirectionalLight();
     directionalLight.computeShadowMap();
 
-    directionalLight.setDirectLightDirection(glm::vec3(0.0f, -2.0f, 1.0f));
+    directionalLight.setDirectLightDirection(glm::vec3(0.0f, -15.0f, 10.0f));
     directionalLight.setAmbientLightIntensity(0.1f);
     directionalLight.setDiffuseLightIntensity(0.8f);
 //--------------------------------------------------------------------------------------------

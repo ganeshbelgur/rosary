@@ -58,7 +58,7 @@ public:
     void setPointLightsData(PointLight *lights, unsigned int lightCount);
     void setSpotLightsData(SpotLight *lights, unsigned int lightCount);
     void setPrimaryTexture(GLuint textureUnit);
-    void setDirectionalLightTransform(const glm::mat4 &lightTransform);
+    void setDirectionalLightTransform(glm::mat4 lightTransform);
     void setDirectionalLightShadowMap(GLuint textureUnit);
 
     void useShader();

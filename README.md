@@ -62,3 +62,6 @@ Demonstrates scene lighting with Phong lighting and shading models with interpol
 
 #### 10. loading-complex-models
 Demonstrates the use of Open Assimp library to load two complex models. The first model is a X-wing spacecraft from Star Wars and the second model is a Black Hawk, a helicopter used for military operations.
+
+#### 11. shadow-mapping
+Demonstartes the rendering of shadow maps using an additional framebuffer

@@ -138,7 +138,7 @@ float calculateDirectionalLightShadowFactor(DirectLightProperties light)
     
     // Mapping our coordinates between 0.0f and 1.0f
     projectionCoordinates = (projectionCoordinates * 0.5) + 0.5;
-
+        
     float currentDepth = projectionCoordinates.z;
 
     vec3 newNormal = normalize(normal);

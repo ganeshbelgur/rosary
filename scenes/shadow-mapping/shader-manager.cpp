@@ -151,7 +151,7 @@ void ShaderManager::setPrimaryTexture(GLuint textureUnit)
     glUniform1i(m_uniformPrimaryTextureLocation, textureUnit);
 }
 
-void ShaderManager::setDirectionalLightTransform(const glm::mat4 &lightTransform)
+void ShaderManager::setDirectionalLightTransform(glm::mat4 lightTransform)
 {
     glUniformMatrix4fv(
         m_uniformDirectionalLightTransformLocation,
