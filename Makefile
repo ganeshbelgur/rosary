@@ -1,9 +1,9 @@
 # Variables required during compilation
 CXX = g++
 CFLAGS = -Wall
-LDFLAGS = -lglfw -lassimp -lGLEW -lGL -lX11 -lpthread -ldl
-INCLUDE_PATH = ./thirdparty/include
-LIBRARY_PATH = ./thirdparty/lib
+LDFLAGS = -lglfw -lassimp -lglad -lGL -lX11 -lpthread -ldl
+INCLUDE_PATH = ./bin/INSTALL/include
+LIBRARY_PATH = ./bin/INSTALL/lib
 TOP_LEVEL_SOURCE_DIR = scenes
 TOP_LEVEL_BUILD_DIR = bin
 
@@ -75,4 +75,4 @@ clean:
 # Use `make run` to execute your example program
 # by passing in program name to $(SCENE)
 run:
-	LD_LIBRARY_PATH=./thirdparty/lib ./bin/$(SCENE)/$(SCENE)-executable
+	LD_LIBRARY_PATH=./bin/INSTALL/lib ./bin/$(SCENE)/$(SCENE)-executable

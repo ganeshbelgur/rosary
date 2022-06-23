@@ -29,7 +29,7 @@
 #include <iostream>
 #include <fstream>
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 
 class ShaderManager
 {

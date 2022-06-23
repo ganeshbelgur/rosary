@@ -1,16 +1,38 @@
 # Rosary
-Rosary is a library of standalone OpenGL applications meant to serve as a playground and a cookbook of recipes at the same time. The library of scenes here were built over a number of years. Please refer to the *Scenes* section below for a detailed description of the Rosary scenes.
+Rosary is a library of standalone OpenGL applications (aka scenes) meant to serve as a playground and a cookbook of recipes at the same time. All these demonstrative scenes or applications were built over a number of years. Please refer to the *Scenes* section below for a detailed description of the individual scenes.
 
 ### Motivations and Design
-Most OpenGL code samples do not record the system design choices made over time as examples get complicated. However, Rosary scenes do show the evolution of such choices by just leaving the older and simpler scenes with their naive system design choices. This caveat was deliberately left to take shape over time as the catalogue of scenes grew. It showcases the ever evolving complexities in computer graphics algorithms and system design choices while using OpenGL. Naturally, the newer scenes appear to be more robust and cleaner than the older ones.
+All Rosary scenes are designed to run independent of each other. The system design choices and the coding principles employed for each scene may vary depending on the complexity of the graphics features in the scene. A scene may demonstrate the use of graphics API features, graphics algorithms or both. The elegance of the code design of the newer scenes tend to be better and robust as they attempt to present complex scenarios than the previous simpler scenes. However, there are exceptions to this pattern.
 
-There are no cross referencing of entities across scenes: while a newer scene might duplicate the code and build upon the code from an older scene, each scene is meant to function in a standalone fashion even though it could blow up the codebase size a bit over time. Obviously, third party dependencies are an exception to this rule. We do not duplicate the third party dependencies for each scene. Further, one can even notice bugs in earlier scenes getting fixed over time even though we have tried really hard to not let potentially hazardous bugs from cascading through the scenes.
+The third party dependencies are compiled only once and linked against the scenes, as required.
+
+### Dependencies
+The thirdparty libraries can be found as submodules in the /thirdparty folder. To check out Rosary together with all dependencies, be sure to use the `--recursive` flag when cloning the repository, i.e.
+
+```
+git clone --recursive https://github.com/ganeshbelgur/rosary.git
+```
+
+The following dependecies will be cloned along with the scenes,
+
+- Glad (v0.1.36 @ 1ecd457) - OpenGL Extension Loader
+- GLFW (v3.3.7 @ 45ce5dd) - Window and Context
+- GLM (v0.9.9.8 @ bf71a83) - Math library
+- Assimp (v5.2.4 @ c8dafe0) - Scenegraph serialization and deserialization
+- STB (master) - Image deserialization
+
+### Building Dependencies
+Run the bash script to build all the dependecies. Building dependecies may require cmake, make, etc to be installed.
+
+```
+./build_dependencies.sh
+```
 
 ### Building Scenes
 We use the GNU make to build all the scenes in one go.
 At the moment, it is not possible to build just a specific scene module. However, we welcome pull requests implementing this extension to the Makefile. Please refer the details of the extension required in the comments section of the Makefile.
 
-We build all the objects and executables for each scene in the scenes folder into a separate folder under `$(TOP_LEVEL_BUILD_DIR)/`.
+We build all the objects and executables for each scene in the scenes folder into a separate folder under `$(TOP_LEVEL_BUILD_DIR)/` or `bin` folder by default.
 ```
 make -j8
 ```
@@ -23,6 +45,7 @@ make run SCENE="simple-triangle"
 
 ### Cleaning the build
 The clean process just recursively removes the `$(TOP_LEVEL_BUILD_DIR)` directory where all the objects and executables were placed during the build process.
+NOTE: Currently this deletes even the thirdparty dependecies which is not right. It will be eventually fixed. Use the `build_dependencies.sh` again for now to rebuild all dependencies.
 ```
 make clean
 ```

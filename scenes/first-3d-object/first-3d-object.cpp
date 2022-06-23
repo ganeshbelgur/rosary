@@ -27,7 +27,7 @@
 #include <cstring>
 #include <cmath>
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
@@ -247,16 +247,13 @@ int main()
     // Set the OpenGL context for GLew to use
     glfwMakeContextCurrent(mainWindow);
 
-    // Allow modern extension features
-    glewExperimental = GL_TRUE;
-    
-    /// Initialise Glew
-    if (glewInit() != GLEW_OK)
+    // Initialise Glad
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
     {
-        printf("GLEW initialisation failed!");
+        std::cout << "Failed to initialize OpenGL context" << std::endl;
         glfwDestroyWindow(mainWindow);
         glfwTerminate();
-        return 1;
+        return -1;
     }
 
     // Enable OpenGL's depth testing feature

@@ -68,14 +68,10 @@ bool WindowManager::createWindow(
     // Set the OpenGL context for GLew to use
     glfwMakeContextCurrent(m_window);
 
-    // Allow modern extension features
-    glewExperimental = GL_TRUE;
-    
-    /// Initialise Glew
-    GLenum error = glewInit();
-    if (error != GLEW_OK)
+    // Initialise Glad
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
     {
-        printf("Error: GLEW initialisation failed, %s", glewGetErrorString(error));
+        std::cout << "Failed to initialize OpenGL context" << std::endl;
         glfwDestroyWindow(m_window);
         glfwTerminate();
         return false;

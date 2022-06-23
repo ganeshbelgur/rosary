@@ -22,7 +22,7 @@
 //  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 
 class Texture
 {
