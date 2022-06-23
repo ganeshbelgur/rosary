@@ -4,32 +4,32 @@ Rosary is a library of standalone OpenGL applications (aka scenes) meant to serv
 ### Motivations and Design
 All Rosary scenes are designed to run independent of each other. The system design choices and the coding principles employed for each scene may vary depending on the complexity of the graphics features in the scene. A scene may demonstrate the use of graphics API features, graphics algorithms or both. The elegance of the code design of the newer scenes tend to be better and robust as they attempt to present complex scenarios than the previous simpler scenes. However, there are exceptions to this pattern.
 
-The third party dependencies are compiled only once and linked against the scenes, as required.
+The third party dependencies are compiled only once and linked against the scenes, as required. Both the scenes and the third party dependencies are built with debug symbols enabled.
 
 ### Dependencies
-The thirdparty libraries can be found as submodules in the /thirdparty folder. To check out Rosary together with all dependencies, be sure to use the `--recursive` flag when cloning the repository, i.e.
+The thirdparty libraries can be found as submodules in the `/thirdparty` folder. To check out Rosary together with all dependencies, be sure to use the `--recursive` flag when cloning the repository, i.e.
 
 ```
 git clone --recursive https://github.com/ganeshbelgur/rosary.git
 ```
 
-The following dependecies will be cloned along with the scenes,
+The following dependencies will be cloned along with the scenes,
 
-- Glad (v0.1.36 @ 1ecd457) - OpenGL Extension Loader
-- GLFW (v3.3.7 @ 45ce5dd) - Window and Context
-- GLM (v0.9.9.8 @ bf71a83) - Math library
-- Assimp (v5.2.4 @ c8dafe0) - Scenegraph serialization and deserialization
-- STB (master) - Image deserialization
+- **Assimp (v5.2.4 @ c8dafe0)** - Scenegraph serialization and deserialization
+- **Glad (v0.1.36 @ 1ecd457)** - OpenGL Extension Loader
+- **GLFW (v3.3.7 @ 45ce5dd)** - Window and Context
+- **GLM (v0.9.9.8 @ bf71a83)** - Math library
+- **STB (master)** - Image deserialization
 
 ### Building Dependencies
-Run the bash script to build all the dependecies. Building dependecies may require cmake, make, etc to be installed.
+Run the bash script to build all the dependencies. Building dependencies may require cmake, make, etc to be installed.
 
 ```
 ./build_dependencies.sh
 ```
 
 ### Building Scenes
-We use the GNU make to build all the scenes in one go.
+GNU make is used to build all the scenes in one go.
 At the moment, it is not possible to build just a specific scene module. However, we welcome pull requests implementing this extension to the Makefile. Please refer the details of the extension required in the comments section of the Makefile.
 
 We build all the objects and executables for each scene in the scenes folder into a separate folder under `$(TOP_LEVEL_BUILD_DIR)/` or `bin` folder by default.
@@ -44,8 +44,8 @@ make run SCENE="simple-triangle"
 ```
 
 ### Cleaning the build
-The clean process just recursively removes the `$(TOP_LEVEL_BUILD_DIR)` directory where all the objects and executables were placed during the build process.
-NOTE: Currently this deletes even the thirdparty dependecies which is not right. It will be eventually fixed. Use the `build_dependencies.sh` again for now to rebuild all dependencies.
+The clean process just removes all the `$(MODULES_DIR)` directories or scene build directories where all the objects and executables of Rosary were initially placed.
+**NOTE**: For a fresh build of the third party dependencies, remove the complete `/bin` folder and run the `build_dependencies.sh` script again.
 ```
 make clean
 ```

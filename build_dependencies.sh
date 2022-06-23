@@ -21,27 +21,27 @@ cp -R -v $SCRIPTPATH/thirdparty/glm/glm $SCRIPTPATH/bin/INSTALL/include
 cp -R -v $SCRIPTPATH/thirdparty/stb $SCRIPTPATH/bin/INSTALL/include 
 
 # Compile glfw
-cmake -S $SCRIPTPATH/thirdparty/glfw -B $SCRIPTPATH/bin/glfw -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$SCRIPTPATH/bin/INSTALL
+cmake -S $SCRIPTPATH/thirdparty/glfw -B $SCRIPTPATH/bin/glfw -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$SCRIPTPATH/bin/INSTALL -DCMAKE_BUILD_TYPE=Debug
 
 cd $SCRIPTPATH/bin/glfw
-make
+make VERBOSE=1
 make install
 cd $SCRIPTPATH
 
 # Compile glad
-cmake -S $SCRIPTPATH/thirdparty/glad -B $SCRIPTPATH/bin/glad -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$SCRIPTPATH/bin/INSTALL
+cmake -S $SCRIPTPATH/thirdparty/glad -B $SCRIPTPATH/bin/glad -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$SCRIPTPATH/bin/INSTALL -DCMAKE_BUILD_TYPE=Debug
 
 cd $SCRIPTPATH/bin/glad
-make
+make VERBOSE=1
 cp -v libglad.so $SCRIPTPATH/bin/INSTALL/lib
 cp -R -v include $SCRIPTPATH/bin/INSTALL
 cd $SCRIPTPATH
 
 # Compile assimp
-cmake -S $SCRIPTPATH/thirdparty/assimp -B $SCRIPTPATH/bin/assimp -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$SCRIPTPATH/bin/INSTALL
+cmake -S $SCRIPTPATH/thirdparty/assimp -B $SCRIPTPATH/bin/assimp -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$SCRIPTPATH/bin/INSTALL -DCMAKE_BUILD_TYPE=Debug
 
 cd $SCRIPTPATH/bin/assimp
-make
+make VERBOSE=1
 make install
 cd $SCRIPTPATH
 

@@ -1,7 +1,7 @@
 # Variables required during compilation
 CXX = g++
-CFLAGS = -Wall
-LDFLAGS = -lglfw -lassimp -lglad -lGL -lX11 -lpthread -ldl
+CFLAGS = -Wall -g
+LDFLAGS = -lglfw -lassimpd -lglad -lGL -lX11 -lpthread -ldl
 INCLUDE_PATH = ./bin/INSTALL/include
 LIBRARY_PATH = ./bin/INSTALL/lib
 TOP_LEVEL_SOURCE_DIR = scenes
@@ -58,7 +58,7 @@ $(eval OBJECT_DIR=./$(TOP_LEVEL_BUILD_DIR)/$1)
 # The '$$' delays the evaluation of the automatic variables 
 # until the evaluation of the rules themselves. 
 ./bin/$1/$1-executable: $(OBJECTS)
-	$(CXX) -L$(LIBRARY_PATH) -o $$@ $$^ $(LDFLAGS)
+	$(CXX) $(CFLAGS) -L$(LIBRARY_PATH) -o $$@ $$^ $(LDFLAGS)
 
 $(OBJECTS): $(OBJECT_DIR)/%.o : $(SOURCE_DIR)/%.cpp
 	$(CXX) $(CFLAGS) -I$(INCLUDE_PATH) -L$(LIBRARY_PATH) -c $$< $(LDFLAGS) -o $$@
@@ -70,7 +70,7 @@ $(foreach module,$(MODULES),$(eval $(call GENERATE_RULE,$(word 3,$(subst /, ,$(m
 # Use `make clean` to remove the bin folder
 clean:
 	@echo "Removing the build folder..."
-	rm -rf $(TOP_LEVEL_BUILD_DIR)
+	$(foreach module_dir,$(MODULE_DIRS),rm -rf $(module_dir);)
 
 # Use `make run` to execute your example program
 # by passing in program name to $(SCENE)
